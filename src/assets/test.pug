@@ -1,0 +1,41 @@
+.sample(style='max-width:900px; margin:100px auto')
+  h4  {{email}}
+  input(type='text' v-model="email")
+  hr
+  h4 {{firstName}}
+  input(type='text' v-model="firstName")
+  hr
+  h4 {{lastName}}
+  input(type='text' v-model="lastName")
+  hr
+  h4 {{phone}}
+  input(type='text' v-model="phone")
+
+  hr
+  h3 Guests
+  .btn.btn-success( @cklick="addGuest") +
+
+  li(v-for="guest in guests")
+    div  {{guest}}
+
+script.
+  let sample = new Vue({
+    el: '.sample',
+    data: {
+      email: 'Email',
+      firstName: 'First Name',
+      lastName: 'Last Name',
+      phone: 'Phone',
+      guests: []
+    },
+
+    methods: {
+      addGuest() {
+        this.guests.push(10);
+      }
+    }
+
+
+
+  });
+  console.log(sample.guests)
