@@ -5,18 +5,16 @@
 
     form(@submit.prevent="formSubmited = true")
 
-      .form-group.mb-1(v-for="(item, key, i) in info")
-        label {{item.name}} <span class="fas fa-check-circle color-green"></span>
-          input(v-model="checkInput"  )
+      .form-group.mb-1(v-for="(item, i) in info" :key="i")
+        label {{item.name}} <i class="fas "></i>
+          input( v-model="item.value"  v-on:change="checkValue(i)" )
 
-      hr
       button.btn.btn-primary(disabled) Send Data
 </template>
 
 <script>
   export default {
     name: "dz2",
-
     data() {
       return {
         info: [
@@ -45,17 +43,26 @@
             value: '',
             pattern: /.+/
           }
-        ]
+        ],
+        classes: []
       }
     },
     methods: {
-      checkInput(e, key){
-
-        console.log(e.target.value);
-
-      }
+       checkValue(i) {
+          console.log(this.info[i].pattern.test(this.info[i].value))
+         if ((this.info[i].value) !== '') {
+           this.classes.push((this.info[i].pattern.test(this.info[i].value)) ? "fa-exclamation-circle" : 'fa-smile' )
+         }
+         else {
+           this.classes.splice(i, 1)
+         }
+         console.log(this.classes)
+       }
     }
+
+
   }
+
 </script>
 
 <style scoped>
