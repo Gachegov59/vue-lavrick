@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     .progress
-      .progress-bar(role="progressbar" aria-valuenow="50" aria-valuemax="100"  )
+      .progress-bar(role="progressbar" aria-valuenow="50" aria-valuemax="100" :style=`{width: progressCount + "%"}` )
 
     form(@submit.prevent="formSubmited = true")
 
@@ -9,7 +9,7 @@
         label {{item.name}} <i class="fas" :class="classes[i]"></i>
           input( v-model="item.value"  v-on:change="checkValue(i)" )
 
-      button.btn.btn-primary(disabled) Send Data
+      button.btn.btn-primary(:disabled="buttonCheck") Send Data
 </template>
 
 <script>
@@ -44,33 +44,37 @@
             pattern: /.+/
           }
         ],
-        classes: [],
-        status: {
-          width: 20
-        }
+        classes: ['', '', '', '', ''],
+        progress: [0, 0, 0, 0, 0],
+        status: 0
       }
     },
     methods: {
-       checkValue(i) {
-          console.log('pattern test', this.info[i].pattern.test(this.info[i].value))
-          console.log('pattern', this.info[i].pattern)
-          console.log('value', this.info[i].value)
-          console.log('i', i) //todo: есди заполнять не с первого косяк, вносит стил в первый
+      checkValue(i) {
+        if (((this.info[i].value) !== '') || (this.info[i].pattern.test(this.info[i].value))) {
+          this.classes.splice(i, 1, ((this.info[i].pattern.test(this.info[i].value)) ? "fa-check-circle color-green" : "fa-exclamation-circle color-red"))
+          this.progress.splice(i, 1, ((this.info[i].pattern.test(this.info[i].value)) ? 1 : 0))
 
-         if (((this.info[i].value) !== '') || (this.info[i].pattern.test(this.info[i].value))) {
-           this.classes.splice(i, 1, ((this.info[i].pattern.test(this.info[i].value)) ? "fa-check-circle color-green" : "fa-exclamation-circle color-red" ))
-           this.status.width +=  100 / this.info.length
+        } else {
+          this.classes.splice(i, 1, '')
+          this.progress.splice(i, 1, '')
+        }
 
-         }
-         else {
-           this.classes.splice(i, 1, '')
-           this.status.width -=  100 / this.info.length
-         }
-         console.log(this.classes)
-         console.log(this.status.width)
-       }
+      }
+    },
+    computed: {
+      buttonCheck() {
+        return this.button = this.progress.reduce((a, b) => a+ b, 0) !== this.classes.length
+
+      },
+      progressCount() {
+        let sum = this.progress.reduce((a, b) => a+ b)
+        let length = this.progress.length
+
+        return this.status = sum / length * 100
+
+      }
     }
-
 
   }
 
