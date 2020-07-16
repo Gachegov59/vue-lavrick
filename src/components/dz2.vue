@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     .progress
-      .progress-bar(role="progressbar" aria-valuenow="50" aria-valuemax="100" :style=`{width: progressCount + "%"}` )
+      .progress-bar(role="progressbar" aria-valuenow="50" aria-valuemax="100" :style="progressCount" )
 
     form(@submit.prevent="formSubmited = true")
 
@@ -45,15 +45,16 @@
           }
         ],
         classes: ['', '', '', '', ''],
-        progress: [0, 0, 0, 0, 0],
-        status: 0
+        progress: [0, 0, 0, 0, 0]
       }
     },
     methods: {
       checkValue(i) {
-        if (((this.info[i].value) !== '') || (this.info[i].pattern.test(this.info[i].value))) {
-          this.classes.splice(i, 1, ((this.info[i].pattern.test(this.info[i].value)) ? "fa-check-circle color-green" : "fa-exclamation-circle color-red"))
-          this.progress.splice(i, 1, ((this.info[i].pattern.test(this.info[i].value)) ? 1 : 0))
+        let infoValue = this.info[i].value
+        let infoPattern = this.info[i].pattern
+        if (((infoValue) !== '') || (infoPattern.test(infoValue))) {
+          this.classes.splice(i, 1, ((infoPattern.test(infoValue)) ? "fa-check-circle color-green" : "fa-exclamation-circle color-red"))
+          this.progress.splice(i, 1, ((infoPattern.test(infoValue)) ? 1 : 0))
 
         } else {
           this.classes.splice(i, 1, '')
@@ -64,17 +65,52 @@
     },
     computed: {
       buttonCheck() {
-        return this.button = this.progress.reduce((a, b) => a+ b, 0) !== this.classes.length
+        return this.button = this.progress.reduce((a, b) => a + b, 0) !== this.classes.length
 
       },
       progressCount() {
-        let sum = this.progress.reduce((a, b) => a+ b)
+        let sum = this.progress.reduce((a, b) => a + b)
         let length = this.progress.length
 
-        return this.status = sum / length * 100
+        // return this.status =  'width:' + sum / length * 100  + "%"
+        return  {
+          width: sum / length * 100  + "%"
+        }
 
       }
+    },
+    beforeCreate() {
+      console.log('bc');
+      console.log(this.$el);
+    },
+    created() {
+      console.log('c');
+      console.log(this.$el);
+    },
+    beforeMount() {
+      console.log('bm');
+      console.log(this.$el);
+    },
+    mounted() {
+      console.log('m');
+      console.log(this.$el);
+    },
+    beforeUpdate() {
+      console.log('bu');
+      console.log(this.$el);
+
+      // let pattern = /^[0-9]{7,14}$/;
+      // let repPattern = /[^0-9]/g;
+      // if(!pattern.test(this.info[1].value)) {
+      //   this.info[1].value = this.info.value[1].replace(repPattern)
+      // }
+      // console.log( this.info[1])
+    },
+    updated() {
+      console.log('u');
+      console.log(this.$el);
     }
+
 
   }
 

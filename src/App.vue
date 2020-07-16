@@ -2,11 +2,15 @@
 <template lang="pug">
   div
     .container
-      <AppDz2/>
+      <Dz2_2/>
+
 </template>
 
 <script>
   import Dz2 from "./components/dz2.vue";
+  import Dz2_2 from "./components/Dz2_2.vue";
+  import styles from "./components/styles.vue";
+  import styles2 from "./components/styles2.vue";
 
   export default {
     data() {
@@ -15,7 +19,10 @@
       }
     },
     components: {
-      AppDz2: Dz2
+      Dz2: Dz2,
+      Dz2_2: Dz2_2,
+      Styles: styles,
+      Styles2: styles2
     }
 
   }
