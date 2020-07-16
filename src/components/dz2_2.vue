@@ -49,11 +49,8 @@
     },
     methods: {
       handleScroll(e) {
-        console.log('scrollHeight', e.target.scrollHeight)
-        console.log('scrollTop', e.target.scrollTop )
-        console.log('offsetHeight', e.target.offsetHeight)
-        console.log(e.target.scrollHeight - e.target.scrollTop - e.target.offsetHeight === 0)
-        return this.scrollDown = e.target.scrollHeight - e.target.scrollTop - e.target.offsetHeight === 0
+        if ( e.target.scrollHeight - e.target.scrollTop - e.target.offsetHeight < 10)
+          this.scrollDown = true
       },
       isShowBlock() {
         this.isShow = !this.isShow

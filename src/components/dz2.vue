@@ -1,15 +1,17 @@
 <template lang="pug">
   div
     .progress
-      .progress-bar(role="progressbar" aria-valuenow="50" aria-valuemax="100" :style="progressCount" )
+      .progress-bar(role="progressbar" aria-valuenow="50" aria-valuemax="100" :style="progressWidth" )
 
     form(@submit.prevent="formSubmited = true")
 
       .form-group.mb-1(v-for="(item, i) in info" :key="i")
-        label {{item.name}} <i class="fas" :class="classes[i]"></i>
-          input( v-model="item.value"  v-on:change="checkValue(i)" )
+        label {{item.name}}
+          span(v-if="controls[i].activated" :class="controls[i].error ?  'fas fa-exclamation-circle color-red' :'fas fa-check-circle color-green' ")
+          input( :value="item.value"   @input="onInput(i, $event.target.value)")
 
-      button.btn.btn-primary(:disabled="buttonCheck") Send Data
+      button.btn.btn-primary(:disabled="done < info.length") Send Data
+      div {{done}}
 </template>
 
 <script>
@@ -25,7 +27,7 @@
           },
           {
             name: 'Phone',
-            value: '',
+            value: '223',
             pattern: /^[0-9]{7,14}$/
           },
           {
@@ -45,73 +47,47 @@
           }
         ],
         classes: ['', '', '', '', ''],
-        progress: [0, 0, 0, 0, 0]
+        controls: []
+      }
+    },
+    beforeMount() {
+      for (let i = 0; i < this.info.length; i++) {
+        this.controls.push({
+          error: !this.info[i].pattern.test(this.info[i].value),
+          activated:this.info[i].value
+        })
       }
     },
     methods: {
-      checkValue(i) {
-        let infoValue = this.info[i].value
-        let infoPattern = this.info[i].pattern
-        if (((infoValue) !== '') || (infoPattern.test(infoValue))) {
-          this.classes.splice(i, 1, ((infoPattern.test(infoValue)) ? "fa-check-circle color-green" : "fa-exclamation-circle color-red"))
-          this.progress.splice(i, 1, ((infoPattern.test(infoValue)) ? 1 : 0))
+      onInput(index, value) {
+        let data = this.info[index]
+        let control = this.controls[index]
 
-        } else {
-          this.classes.splice(i, 1, '')
-          this.progress.splice(i, 1, '')
-        }
-
-      }
+        data.value = value
+        control.error = !data.pattern.test(value)
+        control.activated = true;
+      },
     },
     computed: {
       buttonCheck() {
-        return this.button = this.progress.reduce((a, b) => a + b, 0) !== this.classes.length
-
+        // return this.button = this.progress.reduce((a, b) => a + b, 0) !== this.classes.length
       },
-      progressCount() {
-        let sum = this.progress.reduce((a, b) => a + b)
-        let length = this.progress.length
+      done() {
+        let done = 0;
 
-        // return this.status =  'width:' + sum / length * 100  + "%"
-        return  {
-          width: sum / length * 100  + "%"
+        for (let i = 0; i < this.controls.length; i++) {
+          if (!this.controls[i].error) {
+            done++;
+          }
         }
-
+        return done;
+      },
+      progressWidth() {
+        return {
+          width: (100 / this.controls.length * this.done) + '%'
+        }
       }
-    },
-    beforeCreate() {
-      console.log('bc');
-      console.log(this.$el);
-    },
-    created() {
-      console.log('c');
-      console.log(this.$el);
-    },
-    beforeMount() {
-      console.log('bm');
-      console.log(this.$el);
-    },
-    mounted() {
-      console.log('m');
-      console.log(this.$el);
-    },
-    beforeUpdate() {
-      console.log('bu');
-      console.log(this.$el);
-
-      // let pattern = /^[0-9]{7,14}$/;
-      // let repPattern = /[^0-9]/g;
-      // if(!pattern.test(this.info[1].value)) {
-      //   this.info[1].value = this.info.value[1].replace(repPattern)
-      // }
-      // console.log( this.info[1])
-    },
-    updated() {
-      console.log('u');
-      console.log(this.$el);
     }
-
-
   }
 
 </script>
