@@ -51,6 +51,7 @@
       handleScroll(e) {
         if ( e.target.scrollHeight - e.target.scrollTop - e.target.offsetHeight < 10)
           this.scrollDown = true
+        console.log(1)
       },
       isShowBlock() {
         this.isShow = !this.isShow
